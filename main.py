@@ -19,41 +19,42 @@ if is_offscreen:
 else:
     window = create_window_context(width, height)
 
-# declare some data
-position_data = np.array([
-     0,  .6,
-   -.5, -.3,
-    .5, -.3,
-], np.float32)
+def setup():
+    program = load_shaders('first')
 
-color_data = np.array([
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0
-], np.float32)
+    position_data = np.array([
+         0,  .6,
+       -.5, -.3,
+        .5, -.3,
+    ], np.float32)
 
-# start the party
-program = load_shaders('first')
+    color_data = np.array([
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0
+    ], np.float32)
 
-# setup buffers (vao, vbos) and fill data
-vao = glGenVertexArrays(1)
-glBindVertexArray(vao);
+    # setup buffers (vao, vbos) and fill data
+    vao = glGenVertexArrays(1)
+    glBindVertexArray(vao)
 
-itemsize = np.dtype('float32').itemsize
+    itemsize = np.dtype('float32').itemsize
 
-[position_vbo, color_vbo] = glGenBuffers(2)
+    [position_vbo, color_vbo] = glGenBuffers(2)
 
-glBindBuffer(GL_ARRAY_BUFFER, position_vbo)
-glBufferData(GL_ARRAY_BUFFER, itemsize * position_data.size, position_data, GL_STATIC_DRAW)
-glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, None)
-glEnableVertexAttribArray(0)
+    glBindBuffer(GL_ARRAY_BUFFER, position_vbo)
+    glBufferData(GL_ARRAY_BUFFER, itemsize * position_data.size, position_data, GL_STATIC_DRAW)
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, None)
+    glEnableVertexAttribArray(0)
 
-glBindBuffer(GL_ARRAY_BUFFER, color_vbo)
-glBufferData(GL_ARRAY_BUFFER, itemsize * color_data.size, color_data, GL_STATIC_DRAW)
-glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, None)
-glEnableVertexAttribArray(1)
+    glBindBuffer(GL_ARRAY_BUFFER, color_vbo)
+    glBufferData(GL_ARRAY_BUFFER, itemsize * color_data.size, color_data, GL_STATIC_DRAW)
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, None)
+    glEnableVertexAttribArray(1)
 
-glViewport(0, 0, width, height)
+    glViewport(0, 0, width, height)
+    
+    return program
 
 def draw():
     glClear(GL_COLOR_BUFFER_BIT)
@@ -61,8 +62,9 @@ def draw():
 
     glUseProgram(program)
 
-    glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 3)
+
+program = setup()
 
 if is_offscreen:
     draw()
