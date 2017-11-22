@@ -15,14 +15,14 @@ def load_shaders(name):
     glShaderSource(frag_shader, frag_shader_src)
     glCompileShader(frag_shader)
 
-    # print(glGetShaderInfoLog(vert_shader))
-    # print(glGetShaderInfoLog(frag_shader))
+    print(glGetShaderInfoLog(vert_shader))
+    print(glGetShaderInfoLog(frag_shader))
 
     program = glCreateProgram()
     glAttachShader(program, vert_shader)
     glAttachShader(program, frag_shader)
     glLinkProgram(program)
 
-    # print(glGetProgramInfoLog(program))
+    print(glGetProgramInfoLog(program))
 
     return program
