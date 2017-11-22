@@ -26,3 +26,34 @@ def load_shaders(name):
     print(glGetProgramInfoLog(program))
 
     return program
+
+def load_textures(program, width, height, diffuse_img_data, meta_img_data):
+    [diffuse_texture, meta_texture] = glGenTextures(2)
+
+    glBindTexture(GL_TEXTURE_2D, diffuse_texture)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, diffuse_img_data) 
+    glBindTexture(GL_TEXTURE_2D, 0)
+
+    glBindTexture(GL_TEXTURE_2D, meta_texture)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, meta_img_data) 
+    glBindTexture(GL_TEXTURE_2D, 1)
+
+    diffuse_sampler_loc = glGetUniformLocation(program, 'diffuse_sampler')
+    meta_sampler_loc = glGetUniformLocation(program, 'meta_sampler')
+
+    ret = [
+        (diffuse_texture, diffuse_sampler_loc),
+        (meta_texture, meta_sampler_loc)
+    ]
+
+    return ret
