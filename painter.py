@@ -14,6 +14,10 @@ def draw_quad():
         0, 1,
         0, 0,
         1, 0
+        # 1.5, 1.5,
+        # -.5, 1.5,
+        # -.5, -.5,
+        # 1.5, -.5
     ], np.float32)
 
     # setup buffers (vao, vbos) and fill data

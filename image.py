@@ -17,4 +17,4 @@ def load_image(imagePath):
     img_data = np.array(list(image.getdata()), np.uint8)
 
     width, height = image.size
-    return width, height, img_data
+    return img_data, width, height

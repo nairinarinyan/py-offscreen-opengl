@@ -34,8 +34,10 @@ def load_textures(program, width, height, textures_to_load):
     textures = glGenTextures(num_textures)
 
     for idx, texture_to_load in enumerate(textures_to_load):
-        texture_name, texture_data = texture_to_load
+        texture_name, texture_data, has_alpha = texture_to_load
         texture = textures[idx]
+
+        mode = GL_RGBA if has_alpha else GL_RGB
 
         glBindTexture(GL_TEXTURE_2D, texture)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
@@ -43,7 +45,7 @@ def load_textures(program, width, height, textures_to_load):
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_data) 
+        glTexImage2D(GL_TEXTURE_2D, 0, mode, width, height, 0, mode, GL_UNSIGNED_BYTE, texture_data) 
         glBindTexture(GL_TEXTURE_2D, idx)
 
         texture_loc = glGetUniformLocation(program, texture_name)
@@ -51,19 +53,3 @@ def load_textures(program, width, height, textures_to_load):
         ret.append((texture, texture_loc))
         
     return ret
-    # glBindTexture(GL_TEXTURE_2D, meta_texture)
-    # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-    # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-    # glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-    # glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-
-    # glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, meta_img_data) 
-    # glBindTexture(GL_TEXTURE_2D, 1)
-
-    # diffuse_texture_loc = glGetUniformLocation(program, 'diffuse_texture')
-    # meta_texture_loc = glGetUniformLocation(program, 'meta_texture')
-
-    # ret = [
-    #     (diffuse_texture, diffuse_texture_loc),
-    #     (meta_texture, meta_texture_loc)
-    # ]
