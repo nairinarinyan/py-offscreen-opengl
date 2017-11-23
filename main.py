@@ -14,6 +14,7 @@ is_offscreen = environ.get('PYOPENGL_PLATFORM') == 'egl'
 
 width, height, diffuse_img_data = load_image('./images/scene.jpg')
 _, _ , meta_img_data = load_image('./images/meta.jpg')
+_, _ , uv_img_data = load_image('./images/uv.png')
 
 visible_width = round(width * .5)
 visible_height = round(height * .5)
@@ -38,22 +39,28 @@ def draw():
 
     glUseProgram(program)
 
-    glUniform1i(diffuse_sampler_loc, 0)
-    glUniform1i(meta_sampler_loc, 1)
-
-    glActiveTexture(GL_TEXTURE0)
-    glBindTexture(GL_TEXTURE_2D, diffuse_texture)
-    glActiveTexture(GL_TEXTURE1)
-    glBindTexture(GL_TEXTURE_2D, meta_texture)
+    handle_textures()
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4)
 
+def handle_textures():
+    for idx, texture_data in enumerate(loaded_textures):
+        texture, texture_loc = texture_data
+
+        glUniform1i(texture_loc, idx)
+        glActiveTexture(getattr(OpenGL.GL, 'GL_TEXTURE{}'.format(idx)))
+        glBindTexture(GL_TEXTURE_2D, texture)
+
+
 program = setup()
 
-diffuse_data, meta_data = load_textures(program, width, height, diffuse_img_data, meta_img_data)
+textures_to_load = [
+    ('diffuse_texture', diffuse_img_data),
+    ('meta_texture', meta_img_data),
+    ('uv_texture', uv_img_data)
+]
 
-diffuse_texture, diffuse_sampler_loc = diffuse_data
-meta_texture, meta_sampler_loc = meta_data
+loaded_textures = load_textures(program, width, height, textures_to_load)
 
 if is_offscreen:
     draw()
