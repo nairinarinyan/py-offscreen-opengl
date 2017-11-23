@@ -13,6 +13,9 @@ from utils import load_shaders, load_textures
 
 is_offscreen = environ.get('PYOPENGL_PLATFORM') == 'egl'
 
+angle = 0.0
+radius = 200
+
 diffuse_img_data, width, height = load_image('./images/scene.jpg')
 meta_img_data = load_image('./images/meta.jpg')[0]
 uv_img_data = load_image('./images/uv.png')[0]
@@ -59,12 +62,20 @@ def setup_filter():
     # conv_kernel = identity_kernel
     conv_kernel = blur_kernel
     # conv_kernel = emboss_kernel
+    global angle
+    global radius
+    angle += .00005
+    radius += .01
 
     kernel_loc = glGetUniformLocation(program, 'u_kernel')
     texture_size_loc = glGetUniformLocation(program, 'u_texture_size')
+    angle_loc = glGetUniformLocation(program, 'angle')
+    radius_loc = glGetUniformLocation(program, 'radius')
 
     glUniform1fv(kernel_loc, len(conv_kernel), conv_kernel)
     glUniform2f(texture_size_loc, width, height)
+    glUniform1f(angle_loc, angle)
+    glUniform1f(radius_loc, radius)
 
 
 program = setup()
